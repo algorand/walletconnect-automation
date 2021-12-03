@@ -1,11 +1,13 @@
 #!/bin/bash
 
 SCRIPT_PATH=$(dirname "${0}")
+CWD=`pwd`
+TMPDIR=$(mktemp -d /tmp/foo.XXXXXX)
 
-BUILD_TIME=$(date +%s)
+cd $TMPDIR
 
-docker build \
-    -t walletconnect/relay-server:latest \
-    -t walletconnect/relay-server:latest-java \
-    -t walletconnect/relay-server:${BUILD_TIME}-java \
-    - < ${SCRIPT_PATH}/../docker/Dockerfile
+git clone https://github.com/WalletConnect/walletconnect-monorepo.git
+cd walletconnect-monorepo
+make build-img-relay
+
+rm -rf $TMPDIR

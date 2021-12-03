@@ -1,4 +1,8 @@
 walletconnect:
+  relay:
+    mode: any
+  service:
+    port: 5000
   deployment:
     replicas: 1
     resources:

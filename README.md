@@ -1,19 +1,15 @@
 # Wallet Connect Bridge Automation
 
-This deploys https://github.com/aktionariat/walletconnect-bridge.git to our EKS clusters. While we are sharing this automation for others to benefit, the Algorand team does NOT make warranties regarding the stability / reliability of the referenced bridge implementation. Please research and make decisions around use at your own discretion.
-
-For 2.0 support, see the v2.0 branch. It uses https://github.com/WalletConnect/walletconnect-monorepo.git
+This deploys https://github.com/WalletConnect/walletconnect-monorepo.git to our EKS clusters. While we are sharing this automation for others to benefit, the Algorand team does NOT make warranties regarding the stability / reliability of the referenced bridge implementation. Please research and make decisions around use at your own discretion.
 
 ## Scripts
 
 ### scripts/build.sh
 
-This builds a docker image for the walletconnect bridge. It currently versions through a timestamp and will produce two docker images, for example:
+This builds a docker image for the walletconnect bridge. You can find the version in the outputted logs. It should look something like this
 
 ```
-walletconnect/relay-server:latest
-walletconnect/relay-server:latest-java
-walletconnect/relay-server:1633462163-java
+walletconnect/relay-server:v1.0.1
 ```
 
 ### scripts/push.sh
@@ -26,7 +22,7 @@ Usage: scripts/push.sh <-i IMAGE> [-r AWS_REGION] [-h]
 This script pushes images to ECR. It will check the aws account that the shell it runs in has credentials to talk to and creates the ECR repo if it does not already exist. It then pushes the image with the appropriate tag.
 
 ```
-scripts/push.sh -i walletconnect/relay-server:1633456298-java
+scripts/push.sh -i walletconnect/relay-server:v1.0.1
 ```
 
 ### scripts/deploy.sh
@@ -37,6 +33,8 @@ Usage: scripts/deploy.sh [-l VERSION] [-r AWS_REGION] [-n NAMESPACE] [-c CLASSIF
 ```
 
 This script will deploy to the kubernetes cluster that shell it runs in has access to. When ingress is enabled, it is very opinionated about running with nginx ingress controller, external-dns and lets-encrypt. If you would like to use the settings shown here for your ingress rule, make sure that your lb supporting the ingress controller can handle the timeout.
+
+The namespace used here must have an accompanying values yaml in the values folder. For example, if dev is used for the namespace, there must be a `values/dev.yaml`.
 
 ### scripts/status.sh
 
@@ -49,7 +47,7 @@ This script shows some data about a deployed service.
 
 ```
 scripts/status.sh
-VERSION: 1633456298-java
+VERSION: v1.0.1
 ENDPOINT: wss://wallet-connect.default.dev.example.com/
 NAME                                                     READY   STATUS    RESTARTS   AGE
 wallet-connect-bridge-default-default-59669996d4-vr6bd   1/1     Running   0          15m

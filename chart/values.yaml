@@ -1,7 +1,8 @@
 walletconnect:
+  relay:
+    mode: legacy
   classifier: default
   service:
-    port: 8887
     type: ClusterIP
   deployment:
     image:

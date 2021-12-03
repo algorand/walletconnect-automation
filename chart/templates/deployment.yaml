@@ -14,7 +14,6 @@ spec:
         chart: {{ $.Chart.Name }}
         version: {{ .Values.walletconnect.deployment.tag }}
     spec:
-      terminationGracePeriodSeconds: {{ .Values.walletconnect.deployment.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "fullname" . }}
           image: {{ .Values.walletconnect.deployment.image }}:{{ .Values.walletconnect.deployment.tag }}
@@ -34,6 +33,10 @@ spec:
           env:
             - name: PORT
               value: "{{ .Values.walletconnect.service.port }}"
+            - name: REDIS_URL
+              value: redis://{{ template "fullname" . }}-redis:6379/0
+            - name: RELAY_MODE
+              value: {{ .Values.walletconnect.relay.mode }}
           envFrom:
           {{- if .Values.walletconnect.deployment.secretsRef }}
             - secretRef:

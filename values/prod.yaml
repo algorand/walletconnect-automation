@@ -1,4 +1,6 @@
 walletconnect:
+  service:
+    port: 5000
   deployment:
     replicas: 1
     resources:
