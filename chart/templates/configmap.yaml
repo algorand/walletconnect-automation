@@ -1,0 +1,8 @@
+{{- if .Values.walletconnect.deployment.env }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+data:
+{{ toYaml .Values.walletconnect.deployment.env | indent 2 }}
+{{- end }}

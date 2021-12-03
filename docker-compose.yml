@@ -1,0 +1,15 @@
+services:
+  nginx: 
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
+  relays:
+    image: walletconnect/relay-server:latest
+    environment:
+      REDIS_URL: redis://redis:6379/0
+  redis:
+    ports:
+      - "6379:6379"
+    image: redis:6-alpine

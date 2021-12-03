@@ -1,0 +1,23 @@
+walletconnect:
+  classifier: default
+  service:
+    port: 8887
+    type: ClusterIP
+  deployment:
+    image:
+    tag: latest
+    terminationGracePeriodSeconds: 900
+    replicas: 1
+    imagePullPolicy: Always
+    resources:
+      limits:
+        memory: 2Gi
+        cpu: 2
+  ingress:
+    enabled: false
+    zone:
+      domain:
+    paths: []
+    apiVersion: "extensions/v1beta1"
+    labels: {}
+    tls: true

@@ -1,0 +1,5 @@
+name: wallet-connect-bridge
+version: 1.0
+description: Chart for deploying the wallet connect bridge
+maintainers:
+  - name: Brice Rising

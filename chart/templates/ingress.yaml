@@ -1,0 +1,36 @@
+{{- if .Values.walletconnect.ingress.enabled }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/websocket-services: {{ template "fullname" . }}
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.org/proxy-connect-timeout: "7200s"
+    nginx.org/proxy-read-timeout: "7200s"
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, OPTIONS"
+  name: {{ template "fullname" . }}
+spec:
+  rules:
+  - host: {{ template "hostname" . }}
+    http:
+      paths:
+{{- if len (.Values.walletconnect.ingress.paths) }}
+{{ toYaml .Values.walletconnect.ingress.paths | indent 6 }}
+{{- else }}
+      - backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: {{ .Values.walletconnect.service.port }}
+{{- if .Values.walletconnect.ingress.path }}
+        path: {{ .Values.walletconnect.ingress.path }}
+{{- end -}}
+{{- end -}}
+{{- if .Values.walletconnect.ingress.tls }}
+  tls:
+    - hosts:
+      - {{ template "hostname" . }}
+      secretName: {{ template "hostname" . }}
+{{- end -}}
+{{- end }}

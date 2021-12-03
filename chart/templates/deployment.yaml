@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  replicas: {{ .Values.walletconnect.deployment.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: {{ $.Chart.Name }}
+        version: {{ .Values.walletconnect.deployment.tag }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.walletconnect.deployment.terminationGracePeriodSeconds }}
+      containers:
+        - name: {{ template "fullname" . }}
+          image: {{ .Values.walletconnect.deployment.image }}:{{ .Values.walletconnect.deployment.tag }}
+          imagePullPolicy: {{ .Values.walletconnect.deployment.imagePullPolicy }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.walletconnect.service.port }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.walletconnect.service.port }}
+            initialDelaySeconds: 2400
+            periodSeconds: 5
+          resources:
+{{ toYaml .Values.walletconnect.deployment.resources | indent 12 }}
+          ports:
+            - containerPort: {{ .Values.walletconnect.service.port }}
+          env:
+            - name: PORT
+              value: "{{ .Values.walletconnect.service.port }}"
+          envFrom:
+          {{- if .Values.walletconnect.deployment.secretsRef }}
+            - secretRef:
+                name: {{ .Values.walletconnect.deployment.secretsRef }}
+          {{- end }}
+          {{- if .Values.walletconnect.deployment.env }}
+            - configMapRef:
+                name: {{ template "fullname" . }}
+          {{- end }}

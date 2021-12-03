@@ -1,0 +1,12 @@
+walletconnect:
+  deployment:
+    replicas: 1
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: 1
+  ingress:
+    enabled: true
+    zone:
+      domain: example.com # Put in your domain
+
